@@ -1,0 +1,80 @@
+#{ Dynamic array (inspired by: stb_ds.h) }#
+
+fun main() : int = ({
+    arr = (nil : ^int);
+
+    i = 0;
+    while i < 10000 do
+        arr = arr_add(arr, i);
+        i = i + 1;
+    end;
+
+    sum = 0;
+    i = 0;
+    while i < arr_size(arr) do
+        sum = sum + arr_get(arr, i);
+        i = i + 1;
+    end;
+
+    arr_del(arr);
+    sum;
+}where
+    var i : int;
+    var sum : int;
+    var arr : ^int;
+);
+
+fun arr_add(arr : ^int, el : int) : ^int = ({
+    if !(arr : int) then
+        #{ Create array with start capacity 8. }#
+        arr = ( new (8 * 10) : ^int);
+        #{
+        #  arr[0] -> cap
+        #  arr[1] -> size
+        #  arr[2..n] -> user space
+        }#
+        capacity = 8;
+        size = 0;
+        addrOf(arr, 0)^ = capacity;
+        addrOf(arr, 1)^ = size;
+        arr = addrOf(arr, 2);
+    else
+        #{ Simple retrieve capacity and size. }#
+        capacity = addrOf(arr, -2)^;
+        size = addrOf(arr, - 1)^;
+    end;
+
+    #{ Resize if needed. }#
+    if size == capacity then
+        ({
+            #{ Grow array. }#
+            capacity = capacity * 2;
+            newArr = (new ((capacity + 2) * 8) : ^int);
+            #{ Copy old values into new array. }#
+            idx = -2;
+            while idx < size do
+                addrOf(newArr, idx + 2)^ = addrOf(arr, idx)^;
+                idx = idx + 1;
+            end;
+            #{ Free old array. }#
+            del arr;
+            arr = addrOf(newArr, 2);
+        } where
+            var idx : int;
+            var newArr : ^int;
+        );
+    end;
+    #{ Insert value and increment size }#
+    addrOf(arr, size)^ = el;
+    addrOf(arr, -1)^ = size + 1;
+    arr;
+} where
+    var size : int;
+    var capacity : int;
+    fun addrOf(arr : ^int, i : int) : ^int = (((arr : int) + i * 8) : ^int);
+);
+
+fun arr_size(arr : ^int) : int = (((arr : int) - 1 * 8) : ^int)^;
+fun arr_get(arr : ^int, idx : int) : int = (((arr : int) + idx * 8) : ^int)^;
+fun arr_del(arr : ^int) : void = del (((arr : int) - 2 * 8) : ^void);
+

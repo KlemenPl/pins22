@@ -1,0 +1,30 @@
+fun main() : int = ({
+    i = 0;
+    while i < 100 do
+        MEMO[i] = 0;
+        i = i + 1;
+    end;
+    fibo(50);
+}where
+    var i : int;
+);
+
+fun fibo(i : int) : int = ({
+    if MEMO[i] then
+        res = MEMO[i];
+    else
+        if i >= 2 then
+            res = fibo(i - 1) + fibo(i - 2);
+            MEMO[i] = res;
+        else
+            res = i;
+        end;
+        MEMO[i] = res;
+    end;
+    res;
+}
+where
+        var res : int;
+);
+var MEMO : [100]int;
+

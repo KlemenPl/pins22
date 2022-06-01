@@ -1,0 +1,30 @@
+#{ Tower of hanoi problem:
+#  https://www.cs.cmu.edu/~cburch/survey/recurse/hanoiimpl.html
+}#
+
+fun main() : int = ({
+    moveTower(4, 'A', 'B', 'C');
+    0;
+}where
+    var i : int;
+    fun moveTower(n : int, from : char, to : char, spare : char) : void = ({
+        if n == 1 then
+            printState();
+        else
+            moveTower(n - 1, from, spare, to);
+            printState();
+            moveTower(n - 1, spare, to, from);
+        end;
+    } where
+        fun printState() : void = {
+            putChar(((('0' : int) + n) : char));
+            putChar(':');putChar(' ');
+            putChar((from : char));
+            putChar('-');putChar('>');putChar(' ');
+            putChar((to : char));
+            putChar((10 : char));
+        };
+    );
+);
+
+fun putChar(c : char) : void = none;

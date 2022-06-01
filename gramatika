@@ -1,0 +1,109 @@
+prg -> decls .
+decls -> decl decls' .
+decls' -> decls .
+decls' -> EOF .
+
+decl -> typ identifier = type ; .
+decl -> var identifier : type ; .
+decl -> fun identifier ( fun_params ) : type = expr ; .
+fun_params -> identifier : type  fun_params' .
+fun_params -> .
+fun_params' -> .
+fun_params' -> , identifier : type fun_params' .
+
+type -> void .
+type -> char .
+type -> int .
+type -> identifier .
+type -> [ expr ] type .
+type -> ^ type .
+type -> ( type ) .
+
+stmts -> stmt stmts' .
+stmts' -> .
+stmts' -> ; stmts .
+
+stmt -> if stmtIf .
+stmt -> while stmtWhile .
+stmt -> expr stmt' .
+stmt' -> .
+stmt' -> = expr .
+
+stmtIf -> expr then stmtsIf stmtIf' .
+stmtIf' -> end .
+stmtIf' -> else stmtsEnd .
+
+stmtsIf -> stmt ; stmtsIf' .
+stmtsIf' -> else .
+stmtsIf' -> end .
+stmtsIf' -> stmtsIf .
+
+stmtWhile -> while expr do stmtsEnd .
+
+stmtsEnd -> stmt ; stmtsEnd' .
+stmtsEnd' -> end .
+stmtsEnd' -> stmtsEnd .
+
+
+# Disjunctive operator
+expr -> exprDis .
+exprDis -> exprCon exprDis' .
+exprDis' -> OR exprCon exprDis' .
+exprDis' -> .
+
+# Conjunctive operator
+exprCon -> exprRel exprCon' .
+exprCon' -> AND exprRel exprCon' .
+exprCon' -> .
+
+# Relational operators
+exprRel -> exprAdd exprRel' .
+exprRel' -> EQ exprAdd .
+exprRel' -> NE exprAdd .
+exprRel' -> LT exprAdd .
+exprRel' -> GT exprAdd .
+exprRel' -> LE exprAdd .
+exprRel' -> GE exprAdd .
+
+# Additive operators
+exprAdd -> exprMul exprAdd' .
+exprAdd' -> + exprMul exprAdd' .
+exprAdd' -> - exprMul exprAdd' .
+exprAdd' -> .
+
+# Multiplicative operators
+exprMul -> exprPrefix exprMul' .
+exprMul' -> * exprPrefix exprMul' .
+exprMul' -> / exprPrefix exprMul' .
+exprMul' -> % exprPrefix exprMul' .
+exprMul' -> .
+
+# Prefix operators
+exprPrefix -> ! exprPrefix .
+exprPrefix -> + exprPrefix .
+exprPrefix -> - exprPrefix .
+exprPrefix -> ^ exprPrefix .
+exprPrefix -> new exprPrefix .
+exprPrefix -> del exprPrefix .
+exprPrefix -> exprPostfix .
+
+# Postfix operators
+exprPostfix -> exprAtom exprPostfix' .
+exprPostfix' -> [ expr ] exprPostfix' .
+exprPostfix' -> ^ exprPostfix' .
+exprPostfix' -> .
+
+# Expr Atom
+exprAtom -> const .
+exprAtom -> identifier exprAtom' .
+exprAtom' -> ( exprFunCall ) .
+exprAtom' -> .
+exprFunCall -> expr exprFunCall' .
+exprFunCall' -> , exprFunCall .
+exprFunCall' -> .
+
+exprAtom -> { stmts } .
+exprAtom -> ( expr exprNested ) .
+exprNested -> where decls .
+exprNested -> : type .
+exprNested -> .

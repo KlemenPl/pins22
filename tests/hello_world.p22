@@ -1,0 +1,8 @@
+fun main() : int = {
+    putChar('H');putChar('e');putChar('l');putChar('l');putChar('o');
+    putChar(',');putChar(' ');putChar('W');putChar('o');putChar('r');
+    putChar('l');putChar('d');putChar('!');putChar((10 : char));
+    0;
+};
+
+fun putChar(c : char) : void = none;
